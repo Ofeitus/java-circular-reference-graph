@@ -5,9 +5,7 @@ import java.util.Set;
 
 public interface Body {
 
-    double getMass();
-    Vector2D getPosition();
-    Vector2D getForce();
+    int getWorldId();
 
     void calculateForce(Set<Body> otherBodies);
     void move(double deltaTime);
