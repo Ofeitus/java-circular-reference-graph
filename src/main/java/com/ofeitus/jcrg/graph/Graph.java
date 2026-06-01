@@ -1,8 +1,4 @@
-package com.ofeitus.jcrg.model;
-
-import com.ofeitus.jcrg.exception.DuplicateVertexException;
-import com.ofeitus.jcrg.exception.NoSuchEdgeException;
-import com.ofeitus.jcrg.exception.NoSuchVertexException;
+package com.ofeitus.jcrg.graph;
 
 import java.util.Map;
 import java.util.Set;
@@ -78,6 +74,7 @@ public class Graph<T> {
     }
 
     public void printGraph() {
+        System.out.println(this);
         for (Map.Entry<T, Set<T>> entry : adjacencyList.entrySet()) {
             System.out.println(entry.getKey() + " -> " + entry.getValue());
         }

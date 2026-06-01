@@ -1,4 +1,4 @@
-package com.ofeitus.jcrg.exception;
+package com.ofeitus.jcrg.graph;
 
 public class NoSuchVertexException extends RuntimeException {
 

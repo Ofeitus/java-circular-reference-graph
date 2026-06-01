@@ -14,8 +14,7 @@ import static java.lang.Math.abs;
 public class Vertex extends AbstractBody {
 
     private static final double COULOMB_CONSTANT = 8.9875517923e9;
-
-    private static final double SIZE = 20;
+    public static final double SIZE = 20;
 
     private final double mass = 1;
     private final double electricCharge = 0.01;
