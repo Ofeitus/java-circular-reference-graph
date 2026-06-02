@@ -1,10 +1,13 @@
-package com.ofeitus.jcrg.ui.swing;
+package com.ofeitus.jcrg.ui.diagram;
 
+import com.ofeitus.jcrg.model.Vector2D;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.awt.*;
 
+import static com.ofeitus.jcrg.ui.Colors.EDGE_COLOR;
+import static com.ofeitus.jcrg.ui.CustomStroke.BASIC_2;
 import static java.lang.Math.*;
 
 @Getter
@@ -26,8 +29,9 @@ public class Edge extends Body {
     }
 
     @Override
-    public void draw(Graphics g) {
-        g.setColor(Color.BLACK);
+    public void draw(Graphics2D g) {
+        g.setColor(EDGE_COLOR);
+        g.setStroke(BASIC_2);
 
         Vector2D arrowDirection = to.getPosition().subtract(from.getPosition()).normalize();
         Vector2D fromConnectionPoint = from.getPosition().add(arrowDirection.multiply(Vertex.RADIUS * 1.4));

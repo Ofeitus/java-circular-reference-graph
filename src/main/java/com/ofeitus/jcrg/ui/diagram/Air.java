@@ -1,4 +1,4 @@
-package com.ofeitus.jcrg.ui.swing;
+package com.ofeitus.jcrg.ui.diagram;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class Air extends Body {
 
-    private final double density = 1;
+    private final double density = 0.5;
 
     public Air(int worldId) {
         super(worldId, 0);

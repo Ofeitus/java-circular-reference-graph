@@ -1,4 +1,6 @@
-package com.ofeitus.jcrg.ui.swing;
+package com.ofeitus.jcrg.ui.diagram;
+
+import com.ofeitus.jcrg.model.Vector2D;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,14 +10,19 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
+import static com.ofeitus.jcrg.ui.Colors.BACKGROUND_COLOR;
+
 public class Space extends JPanel {
 
     public static final double TICK = 0.01;
+    public static final double COULOMB_CONSTANT = 8.9875517923e9;
+    public static final double MIN_MOVEMENT_THRESHOLD = 0.05;
 
     private final Set<Body> bodies = new HashSet<>();
 
     public Space(int width, int height) {
         super();
+        setBackground(BACKGROUND_COLOR);
         setPreferredSize(new Dimension(width, height));
         addMouseListener(new MouseAdapter() {
             @Override
@@ -51,6 +58,10 @@ public class Space extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        bodies.stream().sorted(Comparator.comparing(Body::getDepth).reversed()).forEach(body -> body.draw(g));
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+        bodies.stream().sorted(Comparator.comparing(Body::getDepth).reversed()).forEach(body -> body.draw(g2d));
     }
 }

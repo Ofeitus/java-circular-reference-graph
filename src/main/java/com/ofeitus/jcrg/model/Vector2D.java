@@ -1,4 +1,4 @@
-package com.ofeitus.jcrg.ui.swing;
+package com.ofeitus.jcrg.model;
 
 public record Vector2D(double x, double y) {
 
@@ -38,11 +38,6 @@ public record Vector2D(double x, double y) {
             return ZERO;
         }
         return new Vector2D(this.x / mag, this.y / mag);
-    }
-
-    @Override
-    public String toString() {
-        return "Vector2D{" + "x=" + x + ", y=" + y + '}';
     }
 }
 

@@ -1,21 +1,24 @@
-package com.ofeitus.jcrg.ui.swing;
+package com.ofeitus.jcrg.ui.diagram;
 
 import com.ofeitus.jcrg.model.ClassMetadata;
+import com.ofeitus.jcrg.model.Vector2D;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.awt.*;
 import java.util.Set;
 
-import static com.ofeitus.jcrg.ui.swing.Space.TICK;
-import static com.ofeitus.jcrg.ui.swing.Vector2D.minMagnitude;
+import static com.ofeitus.jcrg.ui.Colors.*;
+import static com.ofeitus.jcrg.ui.CustomFont.ROBOTO_REGULAR_20;
+import static com.ofeitus.jcrg.model.Vector2D.minMagnitude;
+import static com.ofeitus.jcrg.ui.CustomStroke.BASIC_2;
+import static com.ofeitus.jcrg.ui.diagram.Space.*;
 import static java.lang.Math.*;
 
 @Getter
 @Setter
 public class Vertex extends Body {
 
-    private static final double COULOMB_CONSTANT = 8.9875517923e9;
     public static final double RADIUS = 10;
     private static final int CAPTION_INDENT = 20;
 
@@ -78,7 +81,10 @@ public class Vertex extends Body {
             velocity = Vector2D.ZERO;
         } else {
             Vector2D acceleration = force.divide(mass);
-            position = position.add(velocity.multiply(deltaTime)).add(acceleration.multiply(deltaTime * deltaTime / 2));
+            Vector2D movement = velocity.multiply(deltaTime).add(acceleration.multiply(deltaTime * deltaTime / 2));
+            if (movement.magnitude() > MIN_MOVEMENT_THRESHOLD) {
+                position = position.add(movement);
+            }
             velocity = velocity.add(acceleration.multiply(deltaTime));
         }
     }
@@ -89,11 +95,14 @@ public class Vertex extends Body {
     }
 
     @Override
-    public void draw(Graphics g) {
-        g.setColor(Color.WHITE);
+    public void draw(Graphics2D g) {
+        g.setColor(VERTEX_COLOR);
         g.fillOval((int) (position.x() - RADIUS), (int) (position.y() - RADIUS), (int) RADIUS * 2, (int) RADIUS * 2);
-        g.setColor(Color.BLACK);
+        g.setColor(VERTEX_BORDER_COLOR);
+        g.setStroke(BASIC_2);
         g.drawOval((int) (position.x() - RADIUS), (int) (position.y() - RADIUS), (int) RADIUS * 2, (int) RADIUS * 2);
+        g.setColor(TEXT_COLOR);
+        g.setFont(ROBOTO_REGULAR_20);
         g.drawString(classMetadata.name(), (int) position.x() - g.getFontMetrics().stringWidth(classMetadata.name()) / 2, (int) (position.y() - CAPTION_INDENT));
     }
 }

@@ -1,9 +1,5 @@
-package com.ofeitus.jcrg.model;
+package com.ofeitus.jcrg.graph;
 
-import com.ofeitus.jcrg.graph.DuplicateVertexException;
-import com.ofeitus.jcrg.graph.NoSuchEdgeException;
-import com.ofeitus.jcrg.graph.NoSuchVertexException;
-import com.ofeitus.jcrg.graph.Graph;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;

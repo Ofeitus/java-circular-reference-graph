@@ -1,5 +1,6 @@
-package com.ofeitus.jcrg.ui.swing;
+package com.ofeitus.jcrg.ui.diagram;
 
+import com.ofeitus.jcrg.model.Vector2D;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -26,6 +27,6 @@ public abstract class Body {
         return false;
     }
 
-    public void draw(Graphics g) {
+    public void draw(Graphics2D g) {
     }
 }
