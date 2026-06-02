@@ -2,7 +2,7 @@ package com.ofeitus.jcrg;
 
 import com.ofeitus.jcrg.model.ClassMetadata;
 import com.ofeitus.jcrg.graph.Graph;
-import com.ofeitus.jcrg.resolver.CycleResolver;
+import com.ofeitus.jcrg.resolver.ClassGraphConGenerator;
 import com.ofeitus.jcrg.resolver.SubgraphExtractor;
 import com.ofeitus.jcrg.ui.swing.*;
 
@@ -15,10 +15,7 @@ public class Main {
 
     public static void main(String[] args) throws FileNotFoundException {
         List<Graph<ClassMetadata>> subGraphs = SubgraphExtractor.getConnectedComponents(
-                CycleResolver.resolve(new File("C:\\Users\\Admin\\IdeaProjects\\smart-resort\\core\\src\\main\\java"), true));
-        for (Graph<ClassMetadata> subGraph : subGraphs) {
-            subGraph.printGraph();
-        }
+                ClassGraphConGenerator.generate(new File("C:\\Users\\Admin\\IdeaProjects\\smart-resort\\core\\src\\main\\java"), true));
 
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Circular references");
@@ -33,16 +30,19 @@ public class Main {
             Map<ClassMetadata, Vertex> vertices = new HashMap<>();
 
             int world = 1;
+            int vertexDepth = 1;
+            int edgeDepth = 2;
+
             for (Graph<ClassMetadata> subGraph : subGraphs) {
                 space.addBody(new Air(world));
                 for (ClassMetadata classMetadata : subGraph.vertices()) {
-                    Vertex vertex = new Vertex(world, new Vector2D(random.nextInt(spaceWidth), random.nextInt(spaceHeight)));
+                    Vertex vertex = new Vertex(world, vertexDepth, new Vector2D(random.nextInt(spaceWidth), random.nextInt(spaceHeight)));
                     space.addBody(vertex);
                     vertices.put(classMetadata, vertex);
                 }
                 for (ClassMetadata classMetadata : subGraph.vertices()) {
                     for (ClassMetadata adjacent : subGraph.outgoingEdges(classMetadata)) {
-                        Edge edge = new Edge(world, vertices.get(classMetadata), vertices.get(adjacent));
+                        Edge edge = new Edge(world, edgeDepth, vertices.get(classMetadata), vertices.get(adjacent));
                         space.addBody(edge);
                     }
                 }
@@ -53,7 +53,6 @@ public class Main {
             JScrollPane scrollPane = new JScrollPane(space);
             scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
             scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
             frame.add(scrollPane);
 
             frame.setLocationRelativeTo(null);

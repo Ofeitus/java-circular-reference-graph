@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class CycleResolver {
+public class ClassGraphConGenerator {
 
-    private static final Logger logger = LoggerFactory.getLogger(CycleResolver.class);
+    private static final Logger logger = LoggerFactory.getLogger(ClassGraphConGenerator.class);
 
     private static List<File> listFilesRecursive(File file) {
         List<File> files = new ArrayList<>();
@@ -40,7 +40,7 @@ public class CycleResolver {
         return files;
     }
 
-    public static Graph<ClassMetadata> resolve(File srcDir, boolean removeSelfReferences) throws FileNotFoundException {
+    public static Graph<ClassMetadata> generate(File srcDir, boolean removeSelfReferences) throws FileNotFoundException {
         List<File> javaFiles = listFilesRecursive(srcDir).stream()
                 .filter(file -> file.getName().endsWith(".java"))
                 .toList();
@@ -54,7 +54,6 @@ public class CycleResolver {
         Graph<ClassMetadata> graph = new Graph<>();
 
         List<CompilationUnit> compilationUnits = new ArrayList<>();
-
         for (File file : javaFiles) {
             compilationUnits.add(StaticJavaParser.parse(file));
         }
@@ -81,7 +80,7 @@ public class CycleResolver {
                             }
                         }
                     } catch (UnsolvedSymbolException _) {
-                        logger.info("Unresolved class: {}", field.getElementType());
+                        logger.debug("Unresolved class: {}", field.getElementType());
                     }
                 }
             }
@@ -97,23 +96,14 @@ public class CycleResolver {
                 if (removeSelfReferences && outgoingEdges.contains(vertex)) {
                     graph.removeEdge(vertex, vertex);
                 }
-
-                boolean needToRemoveVertex = false;
-                if (outgoingEdges.isEmpty()) {
-                    needToRemoveVertex = true;
-                }
-                if (incomingEdges.isEmpty()) {
-                    needToRemoveVertex = true;
-                }
-
-                if (needToRemoveVertex) {
+                if (outgoingEdges.isEmpty() || incomingEdges.isEmpty()) {
                     graph.removeVertex(vertex);
                     somethingRemoved.set(true);
                 }
             });
             iterations++;
         }
-        logger.info("Iterations: {}", iterations);
+        logger.debug("Remove unused classes iterations: {}", iterations);
 
         return graph;
     }

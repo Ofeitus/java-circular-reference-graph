@@ -5,11 +5,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Air extends AbstractBody {
+public class Air extends Body {
 
-    private final double density = 1;
+    private final double density = 0.1;
 
     public Air(int worldId) {
-        super(worldId);
+        super(worldId, 0);
     }
 }

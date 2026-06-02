@@ -3,14 +3,13 @@ package com.ofeitus.jcrg.ui.swing;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.swing.*;
 import java.awt.*;
 
 import static java.lang.Math.*;
 
 @Getter
 @Setter
-public class Edge extends AbstractBody {
+public class Edge extends Body {
 
     private static final int ARROW_HEAD_SIZE = 10;
     private static final double ARROW_HEAD_ANGLE = PI / 6;
@@ -20,17 +19,19 @@ public class Edge extends AbstractBody {
     private final double rigidity = 1;
     private final double originalLength = 1;
 
-    public Edge(int worldId, Vertex from, Vertex to) {
-        super(worldId);
+    public Edge(int worldId, int depth, Vertex from, Vertex to) {
+        super(worldId, depth);
         this.from = from;
         this.to = to;
     }
 
     @Override
     public void draw(Graphics g) {
+        g.setColor(Color.BLACK);
+
         Vector2D arrowDirection = to.getPosition().subtract(from.getPosition()).normalize();
-        Vector2D fromConnectionPoint = from.getPosition().add(arrowDirection.multiply(Vertex.SIZE * 0.7));
-        Vector2D toConnectionPoint = to.getPosition().subtract(arrowDirection.multiply(Vertex.SIZE * 0.7));
+        Vector2D fromConnectionPoint = from.getPosition().add(arrowDirection.multiply(Vertex.RADIUS * 1.4));
+        Vector2D toConnectionPoint = to.getPosition().subtract(arrowDirection.multiply(Vertex.RADIUS * 1.4));
         double x2 = toConnectionPoint.x();
         double y2 = toConnectionPoint.y();
         g.drawLine((int) fromConnectionPoint.x(), (int) fromConnectionPoint.y(), (int) x2, (int) y2);

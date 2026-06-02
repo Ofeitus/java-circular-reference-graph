@@ -75,8 +75,6 @@ public class Graph<T> {
 
     public void printGraph() {
         System.out.println(this);
-        for (Map.Entry<T, Set<T>> entry : adjacencyList.entrySet()) {
-            System.out.println(entry.getKey() + " -> " + entry.getValue());
-        }
+        adjacencyList.forEach((key, value) -> System.out.println(key + " -> " + value));
     }
 }
