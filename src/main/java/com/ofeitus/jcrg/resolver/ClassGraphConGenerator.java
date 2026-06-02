@@ -4,6 +4,7 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.resolution.UnsolvedSymbolException;
+import com.github.javaparser.resolution.declarations.ResolvedReferenceTypeDeclaration;
 import com.github.javaparser.resolution.types.ResolvedType;
 import com.github.javaparser.symbolsolver.JavaSymbolSolver;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.CombinedTypeSolver;
@@ -60,7 +61,7 @@ public class ClassGraphConGenerator {
 
         compilationUnits.forEach(cu -> cu.getTypes().forEach(type -> {
             if (type.getFullyQualifiedName().isPresent()) {
-                ClassMetadata classMetadata = new ClassMetadata(type.getFullyQualifiedName().get());
+                ClassMetadata classMetadata = new ClassMetadata(type.getNameAsString(), type.getFullyQualifiedName().get());
                 graph.addVertex(classMetadata);
             }
         }));
@@ -72,8 +73,9 @@ public class ClassGraphConGenerator {
                         ResolvedType resolvedType = field.getElementType().resolve();
                         if (resolvedType.isReferenceType()) {
                             if (resolvedType.asReferenceType().getTypeDeclaration().isPresent()) {
-                                ClassMetadata classMetadata = new ClassMetadata(type.getFullyQualifiedName().get());
-                                ClassMetadata fieldClassMetadata = new ClassMetadata(resolvedType.asReferenceType().getTypeDeclaration().get().getQualifiedName());
+                                ClassMetadata classMetadata = new ClassMetadata(type.getNameAsString(), type.getFullyQualifiedName().get());
+                                ResolvedReferenceTypeDeclaration referenceTypeDeclaration = resolvedType.asReferenceType().getTypeDeclaration().get();
+                                ClassMetadata fieldClassMetadata = new ClassMetadata(referenceTypeDeclaration.getName(), referenceTypeDeclaration.getQualifiedName());
                                 if (graph.contains(fieldClassMetadata)) {
                                     graph.addEdge(classMetadata, fieldClassMetadata);
                                 }

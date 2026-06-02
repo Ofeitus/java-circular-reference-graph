@@ -1,5 +1,6 @@
 package com.ofeitus.jcrg.ui.swing;
 
+import com.ofeitus.jcrg.model.ClassMetadata;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,16 +17,21 @@ public class Vertex extends Body {
 
     private static final double COULOMB_CONSTANT = 8.9875517923e9;
     public static final double RADIUS = 10;
+    private static final int CAPTION_INDENT = 20;
 
     private final double mass = 1;
-    private final double electricCharge = 0.01;
+    private final double electricCharge = 0.1;
+
     private Vector2D position;
     private Vector2D velocity = Vector2D.ZERO;
     private Vector2D force = Vector2D.ZERO;
 
-    public Vertex(int worldId, int depth, Vector2D position) {
+    private final ClassMetadata classMetadata;
+
+    public Vertex(int worldId, int depth, Vector2D position, ClassMetadata classMetadata) {
         super(worldId, depth);
         this.position = position;
+        this.classMetadata = classMetadata;
     }
 
     @Override
@@ -88,5 +94,6 @@ public class Vertex extends Body {
         g.fillOval((int) (position.x() - RADIUS), (int) (position.y() - RADIUS), (int) RADIUS * 2, (int) RADIUS * 2);
         g.setColor(Color.BLACK);
         g.drawOval((int) (position.x() - RADIUS), (int) (position.y() - RADIUS), (int) RADIUS * 2, (int) RADIUS * 2);
+        g.drawString(classMetadata.name(), (int) position.x() - g.getFontMetrics().stringWidth(classMetadata.name()) / 2, (int) (position.y() - CAPTION_INDENT));
     }
 }

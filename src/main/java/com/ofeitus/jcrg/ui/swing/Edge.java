@@ -16,7 +16,7 @@ public class Edge extends Body {
 
     private final Vertex from;
     private final Vertex to;
-    private final double rigidity = 1;
+    private final double rigidity = 20;
     private final double originalLength = 1;
 
     public Edge(int worldId, int depth, Vertex from, Vertex to) {

@@ -36,7 +36,7 @@ public class Main {
             for (Graph<ClassMetadata> subGraph : subGraphs) {
                 space.addBody(new Air(world));
                 for (ClassMetadata classMetadata : subGraph.vertices()) {
-                    Vertex vertex = new Vertex(world, vertexDepth, new Vector2D(random.nextInt(spaceWidth), random.nextInt(spaceHeight)));
+                    Vertex vertex = new Vertex(world, vertexDepth, new Vector2D(random.nextInt(spaceWidth), random.nextInt(spaceHeight)), classMetadata);
                     space.addBody(vertex);
                     vertices.put(classMetadata, vertex);
                 }
