@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class ClassGraphConGenerator {
+public class GraphGenerator {
 
-    private static final Logger logger = LoggerFactory.getLogger(ClassGraphConGenerator.class);
+    private static final Logger logger = LoggerFactory.getLogger(GraphGenerator.class);
 
     private static List<File> listFilesRecursive(File file) {
         List<File> files = new ArrayList<>();

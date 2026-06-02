@@ -4,7 +4,7 @@ import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import com.ofeitus.jcrg.model.ClassMetadata;
 import com.ofeitus.jcrg.graph.Graph;
 import com.ofeitus.jcrg.model.Vector2D;
-import com.ofeitus.jcrg.resolver.ClassGraphConGenerator;
+import com.ofeitus.jcrg.resolver.GraphGenerator;
 import com.ofeitus.jcrg.resolver.SubgraphExtractor;
 import com.ofeitus.jcrg.ui.diagram.Air;
 import com.ofeitus.jcrg.ui.diagram.Edge;
@@ -23,7 +23,7 @@ public class Main {
         //List<Graph<ClassMetadata>> subGraphs = SubgraphExtractor.getConnectedComponents(
         //        ClassGraphConGenerator.generate(new File("C:\\Users\\Admin\\IdeaProjects\\smart-resort\\core\\src\\main\\java"), true));
         List<Graph<ClassMetadata>> subGraphs = SubgraphExtractor.getConnectedComponents(
-                ClassGraphConGenerator.generate(new File("C:\\Users\\Admin\\IdeaProjects\\java-circular-reference-graph\\test"), true));
+                GraphGenerator.generate(new File("C:\\Users\\Admin\\IdeaProjects\\java-circular-reference-graph\\test"), true));
 
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Circular references");
