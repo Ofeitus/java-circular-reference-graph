@@ -6,8 +6,9 @@ import lombok.Setter;
 
 import java.awt.*;
 
-import static com.ofeitus.jcrg.ui.Colors.EDGE_COLOR;
-import static com.ofeitus.jcrg.ui.CustomStroke.BASIC_2;
+import static com.ofeitus.jcrg.ui.theme.Colors.EDGE_COLOR;
+import static com.ofeitus.jcrg.ui.theme.Colors.HIGHLIGHT_COLOR;
+import static com.ofeitus.jcrg.ui.theme.CustomStroke.BASIC_2;
 import static java.lang.Math.*;
 
 @Getter
@@ -30,7 +31,11 @@ public class Edge extends Body {
 
     @Override
     public void draw(Graphics2D g) {
-        g.setColor(EDGE_COLOR);
+        if (highlighted) {
+            g.setColor(HIGHLIGHT_COLOR);
+        } else {
+            g.setColor(EDGE_COLOR);
+        }
         g.setStroke(BASIC_2);
 
         Vector2D arrowDirection = to.getPosition().subtract(from.getPosition()).normalize();

@@ -1,6 +1,8 @@
 package com.ofeitus.jcrg.ui.diagram;
 
+import com.ofeitus.jcrg.model.ClassCycle;
 import com.ofeitus.jcrg.model.Vector2D;
+import com.ofeitus.jcrg.ui.component.CyclesList;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +12,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.ofeitus.jcrg.ui.Colors.BACKGROUND_COLOR;
+import static com.ofeitus.jcrg.ui.theme.Colors.BACKGROUND_COLOR;
 
 public class Space extends JPanel {
 
@@ -20,7 +22,7 @@ public class Space extends JPanel {
 
     private final Set<Body> bodies = new HashSet<>();
 
-    public Space(int width, int height) {
+    public Space(int width, int height, CyclesList cyclesList) {
         super();
         setBackground(BACKGROUND_COLOR);
         setPreferredSize(new Dimension(width, height));
@@ -37,6 +39,23 @@ public class Space extends JPanel {
             @Override
             public void mouseReleased(MouseEvent e) {
                 bodies.forEach(body -> body.setDragged(false));
+            }
+        });
+        cyclesList.addListSelectionListener(e -> {
+            bodies.forEach(body -> body.setHighlighted(false));
+            ClassCycle cycle = cyclesList.getSelectedValue();
+            if (cycle != null) {
+                bodies.forEach(body -> {
+                    switch (body) {
+                        case Vertex vertex -> vertex.setHighlighted(cycle.contains(vertex.getClassMetadata()));
+                        case Edge edge -> edge.setHighlighted(
+                                cycle.contains(edge.getFrom().getClassMetadata())
+                                && cycle.contains(edge.getTo().getClassMetadata())
+                        );
+                        default -> {
+                        }
+                    }
+                });
             }
         });
 

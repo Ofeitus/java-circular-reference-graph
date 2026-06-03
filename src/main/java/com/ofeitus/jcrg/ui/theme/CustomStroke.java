@@ -1,4 +1,4 @@
-package com.ofeitus.jcrg.ui;
+package com.ofeitus.jcrg.ui.theme;
 
 import java.awt.*;
 

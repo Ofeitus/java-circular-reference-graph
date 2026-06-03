@@ -1,4 +1,4 @@
-package com.ofeitus.jcrg.resolver;
+package com.ofeitus.jcrg.parser;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class GraphGenerator {
+public class JavaParser {
 
-    private static final Logger logger = LoggerFactory.getLogger(GraphGenerator.class);
+    private static final Logger logger = LoggerFactory.getLogger(JavaParser.class);
 
     private static List<File> listFilesRecursive(File file) {
         List<File> files = new ArrayList<>();
@@ -41,7 +41,7 @@ public class GraphGenerator {
         return files;
     }
 
-    public static Graph<ClassMetadata> generate(File srcDir, boolean removeSelfReferences) throws FileNotFoundException {
+    public static Graph<ClassMetadata> parse(File srcDir, boolean removeSelfReferences) throws FileNotFoundException {
         List<File> javaFiles = listFilesRecursive(srcDir).stream()
                 .filter(file -> file.getName().endsWith(".java"))
                 .toList();

@@ -5,13 +5,14 @@ import com.ofeitus.jcrg.model.Vector2D;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.Set;
 
-import static com.ofeitus.jcrg.ui.Colors.*;
-import static com.ofeitus.jcrg.ui.CustomFont.ROBOTO_REGULAR_20;
+import static com.ofeitus.jcrg.ui.theme.Colors.*;
 import static com.ofeitus.jcrg.model.Vector2D.minMagnitude;
-import static com.ofeitus.jcrg.ui.CustomStroke.BASIC_2;
+import static com.ofeitus.jcrg.ui.theme.CustomFont.ROBOTO_REGULAR_20;
+import static com.ofeitus.jcrg.ui.theme.CustomStroke.BASIC_2;
 import static com.ofeitus.jcrg.ui.diagram.Space.*;
 import static java.lang.Math.*;
 
@@ -96,7 +97,11 @@ public class Vertex extends Body {
 
     @Override
     public void draw(Graphics2D g) {
-        g.setColor(VERTEX_COLOR);
+        if (highlighted) {
+            g.setColor(HIGHLIGHT_COLOR);
+        } else {
+            g.setColor(VERTEX_COLOR);
+        }
         g.fillOval((int) (position.x() - RADIUS), (int) (position.y() - RADIUS), (int) RADIUS * 2, (int) RADIUS * 2);
         g.setColor(VERTEX_BORDER_COLOR);
         g.setStroke(BASIC_2);

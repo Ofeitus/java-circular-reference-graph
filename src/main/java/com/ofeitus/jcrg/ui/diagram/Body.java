@@ -16,6 +16,7 @@ public abstract class Body {
     protected final int worldId;
     private final int depth;
     protected boolean dragged;
+    protected boolean highlighted;
 
     public void calculateForce(Set<Body> otherBodies) {
     }
