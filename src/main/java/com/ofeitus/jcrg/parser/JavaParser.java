@@ -41,14 +41,14 @@ public class JavaParser {
         return files;
     }
 
-    public static Graph<ClassMetadata> parse(File srcDir, boolean removeSelfReferences) throws FileNotFoundException {
-        List<File> javaFiles = listFilesRecursive(srcDir).stream()
-                .filter(file -> file.getName().endsWith(".java"))
+    public static Graph<ClassMetadata> parse(List<File> srcDirs, boolean removeSelfReferences) throws FileNotFoundException {
+        List<File> javaFiles = srcDirs.stream()
+                .flatMap(srcDir -> listFilesRecursive(srcDir).stream().filter(file -> file.getName().endsWith(".java")))
                 .toList();
 
         CombinedTypeSolver combinedTypeSolver = new CombinedTypeSolver();
         combinedTypeSolver.add(new ReflectionTypeSolver(false));
-        combinedTypeSolver.add(new JavaParserTypeSolver(srcDir));
+        srcDirs.forEach(srcDir -> combinedTypeSolver.add(new JavaParserTypeSolver(srcDir)));
         JavaSymbolSolver symbolSolver = new JavaSymbolSolver(combinedTypeSolver);
         StaticJavaParser.getParserConfiguration().setSymbolResolver(symbolSolver);
 
@@ -106,6 +106,8 @@ public class JavaParser {
             iterations++;
         }
         logger.debug("Remove unused classes iterations: {}", iterations);
+
+        logger.info("Classes parsed: {}", graph.size());
 
         return graph;
     }

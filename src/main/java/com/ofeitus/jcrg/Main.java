@@ -28,7 +28,9 @@ public class Main {
         ));
         FlatMacLightLaf.setup();
 
-        List<Graph<ClassMetadata>> subGraphs = JavaParser.parse(new File("C:\\Users\\Admin\\IdeaProjects\\smart-resort\\core\\src\\main\\java"), true)
+        List<Graph<ClassMetadata>> subGraphs = JavaParser.parse(
+                List.of(new File("C:\\Users\\TYUSHEV\\IdeaProjects\\smart-resort\\core\\src\\main\\java"),
+                        new File("C:\\Users\\TYUSHEV\\IdeaProjects\\smart-resort\\reservation\\src\\main\\java")), true)
                 .connectedComponents();
         //List<Graph<ClassMetadata>> subGraphs = SubgraphExtractor.getConnectedComponents(
         //        GraphGenerator.generate(new File("C:\\Users\\Admin\\IdeaProjects\\java-circular-reference-graph\\test"), true));
@@ -76,12 +78,13 @@ public class Main {
                 world++;
             }
 
-            JScrollPane scrollPane = new JScrollPane(space);
-            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-            scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-            frame.add(scrollPane, BorderLayout.CENTER);
+            JScrollPane spaceScrollPane = new JScrollPane(space);
+            spaceScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            spaceScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            frame.add(spaceScrollPane, BorderLayout.CENTER);
 
-            frame.add(cyclesList, BorderLayout.EAST);
+            JScrollPane cyclesScrollPane = new JScrollPane(cyclesList);
+            frame.add(cyclesScrollPane, BorderLayout.EAST);
 
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setLocationRelativeTo(null);
