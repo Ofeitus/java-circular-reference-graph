@@ -12,4 +12,5 @@ public class Colors {
     public static final Color EDGE_COLOR = new Color(0x727A83);
     public static final Color EDGE_SHADOWED_COLOR = new Color(0x55FFFFFF & EDGE_COLOR.getRGB(), true);
     public static final Color HIGHLIGHT_COLOR = new Color(0xFF5722);
+    public static final Color HIGHLIGHT_COLOR_2 = new Color(0x009688);
 }

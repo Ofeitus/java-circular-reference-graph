@@ -37,6 +37,7 @@ public class Main {
 
         List<ClassCycle> cycles = subGraphs.stream()
                 .flatMap(subGraph -> subGraph.elementaryCycles().stream())
+                .sorted(Comparator.comparing(List::size))
                 .map(ClassCycle::new)
                 .toList();
 

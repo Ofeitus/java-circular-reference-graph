@@ -19,14 +19,15 @@ public record ClassCycle(List<ClassMetadata> classes) {
 
     @Override
     public String toString() {
-        if (classes.isEmpty()) {
-            return "";
-        } else if (classes.size() == 1) {
-            return classes.getFirst().name();
+        StringBuilder sb = new StringBuilder();
+        sb.append("(").append(classes.size()).append(") ");
+        if (classes.size() == 1) {
+            sb.append(classes.getFirst().name());
         } else if (classes.size() == 2) {
-            return classes.getFirst().name() + " -> " + classes.get(1).name();
+            sb.append(classes.getFirst().name()).append(" -> ").append(classes.get(1).name());
         } else {
-            return classes.getFirst().name() + " -> ... -> " + classes.getLast().name();
+            sb.append(classes.getFirst().name()).append(" -> ... -> ").append(classes.getLast().name());
         }
+        return sb.toString();
     }
 }

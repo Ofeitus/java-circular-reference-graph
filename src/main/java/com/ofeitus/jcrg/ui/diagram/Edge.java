@@ -14,8 +14,8 @@ import static java.lang.Math.*;
 @Setter
 public class Edge extends Body {
 
-    private static final int ARROW_HEAD_SIZE = 10;
-    private static final double ARROW_HEAD_ANGLE = PI / 6;
+    private static final int ARROW_HEAD_SIZE = 15;
+    private static final double ARROW_HEAD_ANGLE = PI / 8;
 
     private Color color = EDGE_COLOR;
 
@@ -48,9 +48,12 @@ public class Edge extends Body {
         Vector2D arrowDirection = to.getPosition().subtract(from.getPosition()).normalize();
         Vector2D fromConnectionPoint = from.getPosition().add(arrowDirection.multiply(Vertex.RADIUS * 1.4));
         Vector2D toConnectionPoint = to.getPosition().subtract(arrowDirection.multiply(Vertex.RADIUS * 1.4));
+        Vector2D point3 = to.getPosition().subtract(arrowDirection.multiply(Vertex.RADIUS * 1.4 + (double) ARROW_HEAD_SIZE / 2));
         double x2 = toConnectionPoint.x();
         double y2 = toConnectionPoint.y();
-        g.drawLine((int) fromConnectionPoint.x(), (int) fromConnectionPoint.y(), (int) x2, (int) y2);
+        double x3 = point3.x();
+        double y3 = point3.y();
+        g.drawLine((int) fromConnectionPoint.x(), (int) fromConnectionPoint.y(), (int) x3, (int) y3);
 
         double angle = atan2(arrowDirection.y(), arrowDirection.x());
 
@@ -59,7 +62,7 @@ public class Edge extends Body {
         double xRight = x2 - ARROW_HEAD_SIZE * cos(angle + ARROW_HEAD_ANGLE);
         double yRight = y2 - ARROW_HEAD_SIZE * sin(angle + ARROW_HEAD_ANGLE);
 
-        g.drawLine((int) x2, (int) y2, (int) xLeft, (int) yLeft);
-        g.drawLine((int) x2, (int) y2, (int) xRight, (int) yRight);
+        g.fillPolygon(new int[]{(int) x2, (int) xLeft, (int) x3, (int) xRight}, new int[]{(int) y2, (int) yLeft, (int) y3, (int) yRight}, 4);
+        g.drawPolygon(new int[]{(int) x2, (int) xLeft, (int) x3, (int) xRight}, new int[]{(int) y2, (int) yLeft, (int) y3, (int) yRight}, 4);
     }
 }
