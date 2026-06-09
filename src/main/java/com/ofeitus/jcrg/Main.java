@@ -7,7 +7,6 @@ import com.ofeitus.jcrg.graph.Graph;
 import com.ofeitus.jcrg.model.Vector2D;
 import com.ofeitus.jcrg.parser.JavaParser;
 import com.ofeitus.jcrg.ui.component.CyclesList;
-import com.ofeitus.jcrg.ui.diagram.Air;
 import com.ofeitus.jcrg.ui.diagram.Edge;
 import com.ofeitus.jcrg.ui.diagram.Space;
 import com.ofeitus.jcrg.ui.diagram.Vertex;
@@ -29,8 +28,8 @@ public class Main {
         FlatMacLightLaf.setup();
 
         List<Graph<ClassMetadata>> subGraphs = JavaParser.parse(
-                List.of(new File("C:\\Users\\TYUSHEV\\IdeaProjects\\smart-resort\\core\\src\\main\\java"),
-                        new File("C:\\Users\\TYUSHEV\\IdeaProjects\\smart-resort\\reservation\\src\\main\\java")), true)
+                List.of(new File("C:\\Users\\Admin\\IdeaProjects\\smart-resort\\core\\src\\main\\java"),
+                        new File("C:\\Users\\Admin\\IdeaProjects\\smart-resort\\reservation\\src\\main\\java")), true)
                 .connectedComponents();
         //List<Graph<ClassMetadata>> subGraphs = SubgraphExtractor.getConnectedComponents(
         //        GraphGenerator.generate(new File("C:\\Users\\Admin\\IdeaProjects\\java-circular-reference-graph\\test"), true));
@@ -42,9 +41,7 @@ public class Main {
 
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Circular references");
-            int spaceWidth = 1600;
-            int spaceHeight = 900;
-            frame.setSize(spaceWidth, spaceHeight);
+            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
             Random random = new Random();
 
@@ -53,7 +50,7 @@ public class Main {
             CyclesList cyclesList = new CyclesList(cycleListModel);
             cyclesList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-            Space space = new Space(spaceWidth, spaceHeight, cyclesList);
+            Space space = new Space(cyclesList);
 
             Map<ClassMetadata, Vertex> vertices = new HashMap<>();
 
@@ -62,9 +59,8 @@ public class Main {
             int edgeDepth = 2;
 
             for (Graph<ClassMetadata> subGraph : subGraphs) {
-                space.addBody(new Air(world));
                 for (ClassMetadata classMetadata : subGraph.vertices()) {
-                    Vertex vertex = new Vertex(world, vertexDepth, new Vector2D(random.nextInt(spaceWidth), random.nextInt(spaceHeight)), classMetadata);
+                    Vertex vertex = new Vertex(world, vertexDepth, new Vector2D(random.nextInt(screenSize.width), random.nextInt(screenSize.height)), classMetadata);
                     space.addBody(vertex);
                     vertices.put(classMetadata, vertex);
                 }
@@ -87,7 +83,7 @@ public class Main {
             frame.add(cyclesScrollPane, BorderLayout.EAST);
 
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setLocationRelativeTo(null);
+            frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
             frame.setVisible(true);
         });
     }

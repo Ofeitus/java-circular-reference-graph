@@ -154,7 +154,8 @@ public class Graph<T> {
                 continue;
             }
             if (neighbor.equals(startVertex)) {
-                List<T> cycle = new ArrayList<>(stack);
+                List<T> cycle = new ArrayList<>();
+                stack.descendingIterator().forEachRemaining(cycle::add);
                 allCycles.add(cycle);
                 foundCycle = true;
             } else if (!blockedSet.contains(neighbor)) {

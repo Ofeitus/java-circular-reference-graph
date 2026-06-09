@@ -6,9 +6,8 @@ import lombok.Setter;
 
 import java.awt.*;
 
-import static com.ofeitus.jcrg.ui.theme.Colors.EDGE_COLOR;
-import static com.ofeitus.jcrg.ui.theme.Colors.HIGHLIGHT_COLOR;
-import static com.ofeitus.jcrg.ui.theme.CustomStroke.BASIC_2;
+import static com.ofeitus.jcrg.ui.theme.Colors.*;
+import static com.ofeitus.jcrg.ui.theme.CustomStroke.BASIC_1_5;
 import static java.lang.Math.*;
 
 @Getter
@@ -17,6 +16,8 @@ public class Edge extends Body {
 
     private static final int ARROW_HEAD_SIZE = 10;
     private static final double ARROW_HEAD_ANGLE = PI / 6;
+
+    private Color color = EDGE_COLOR;
 
     private final Vertex from;
     private final Vertex to;
@@ -30,13 +31,19 @@ public class Edge extends Body {
     }
 
     @Override
-    public void draw(Graphics2D g) {
-        if (highlighted) {
-            g.setColor(HIGHLIGHT_COLOR);
-        } else {
-            g.setColor(EDGE_COLOR);
+    public void setState(BodyState state) {
+        super.setState(state);
+        switch (state) {
+            case HIGHLIGHTED -> color = HIGHLIGHT_COLOR;
+            case DEFAULT -> color = EDGE_COLOR;
+            case SHADOWED -> color = EDGE_SHADOWED_COLOR;
         }
-        g.setStroke(BASIC_2);
+    }
+
+    @Override
+    public void draw(Graphics2D g) {
+        g.setColor(color);
+        g.setStroke(BASIC_1_5);
 
         Vector2D arrowDirection = to.getPosition().subtract(from.getPosition()).normalize();
         Vector2D fromConnectionPoint = from.getPosition().add(arrowDirection.multiply(Vertex.RADIUS * 1.4));

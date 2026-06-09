@@ -5,14 +5,14 @@ import com.ofeitus.jcrg.model.Vector2D;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.Set;
 
+import static com.ofeitus.jcrg.ui.diagram.BodyState.*;
 import static com.ofeitus.jcrg.ui.theme.Colors.*;
 import static com.ofeitus.jcrg.model.Vector2D.minMagnitude;
 import static com.ofeitus.jcrg.ui.theme.CustomFont.ROBOTO_REGULAR_20;
-import static com.ofeitus.jcrg.ui.theme.CustomStroke.BASIC_2;
+import static com.ofeitus.jcrg.ui.theme.CustomStroke.BASIC_1_5;
 import static com.ofeitus.jcrg.ui.diagram.Space.*;
 import static java.lang.Math.*;
 
@@ -24,7 +24,10 @@ public class Vertex extends Body {
     private static final int CAPTION_INDENT = 20;
 
     private final double mass = 1;
-    private final double electricCharge = 0.1;
+    private double electricCharge = 0.1;
+
+    private Color color = VERTEX_COLOR;
+    private Color foregroundColor = FOREGROUND_COLOR;
 
     private Vector2D position;
     private Vector2D velocity = Vector2D.ZERO;
@@ -42,7 +45,10 @@ public class Vertex extends Body {
     public void calculateForce(Set<Body> otherBodies) {
         force = Vector2D.ZERO;
         otherBodies.forEach(otherBody -> {
-            if (worldId != otherBody.getWorldId()) {
+            if (state.equals(HIGHLIGHTED) && !otherBody.state.equals(HIGHLIGHTED)) {
+                return;
+            }
+            if (worldId != otherBody.worldId) {
                 return;
             }
             if (otherBody == this) {
@@ -50,9 +56,9 @@ public class Vertex extends Body {
             }
             switch (otherBody) {
                 case Vertex otherVertex -> {
-                    Vector2D positionDiff = position.subtract(otherVertex.getPosition());
+                    Vector2D positionDiff = position.subtract(otherVertex.position);
                     double r = positionDiff.magnitude();
-                    double coulombLaw = COULOMB_CONSTANT * abs(electricCharge * otherVertex.getElectricCharge()) / (r * r);
+                    double coulombLaw = COULOMB_CONSTANT * abs(electricCharge * otherVertex.electricCharge) / (r * r);
                     force = force.add(positionDiff.normalize().multiply(coulombLaw));
                 }
                 case Edge edge -> {
@@ -64,15 +70,13 @@ public class Vertex extends Body {
                         force = force.add(positionDiff.normalize().multiply(hookeLaw));
                     }
                 }
-                case Air air -> {
-                    Vector2D airResistance = velocity.normalize().invert().multiply(pow(velocity.magnitude(), 2) * air.getDensity());
-                    Vector2D safeAirResistance = minMagnitude(airResistance, velocity.invert().divide(TICK).multiply(mass));
-                    force = force.add(safeAirResistance);
-                }
                 default -> {
                 }
             }
         });
+        Vector2D airResistance = velocity.normalize().invert().multiply(pow(velocity.magnitude(), 2) * AIR_DENSITY);
+        Vector2D safeAirResistance = minMagnitude(airResistance, velocity.invert().divide(TICK).multiply(mass));
+        force = force.add(safeAirResistance);
     }
 
     @Override
@@ -96,17 +100,31 @@ public class Vertex extends Body {
     }
 
     @Override
-    public void draw(Graphics2D g) {
-        if (highlighted) {
-            g.setColor(HIGHLIGHT_COLOR);
-        } else {
-            g.setColor(VERTEX_COLOR);
+    public void setState(BodyState state) {
+        super.setState(state);
+        switch (state) {
+            case HIGHLIGHTED -> {
+                color = HIGHLIGHT_COLOR;
+                foregroundColor = FOREGROUND_COLOR;
+            }
+            case DEFAULT -> {
+                color = VERTEX_COLOR;
+                foregroundColor = FOREGROUND_COLOR;
+            }
+            case SHADOWED -> {
+                color = VERTEX_SHADEWED_COLOR;
+                foregroundColor = FOREGROUND_SHADEWED_COLOR;
+            }
         }
+    }
+
+    @Override
+    public void draw(Graphics2D g) {
+        g.setColor(color);
         g.fillOval((int) (position.x() - RADIUS), (int) (position.y() - RADIUS), (int) RADIUS * 2, (int) RADIUS * 2);
-        g.setColor(VERTEX_BORDER_COLOR);
-        g.setStroke(BASIC_2);
+        g.setColor(foregroundColor);
+        g.setStroke(BASIC_1_5);
         g.drawOval((int) (position.x() - RADIUS), (int) (position.y() - RADIUS), (int) RADIUS * 2, (int) RADIUS * 2);
-        g.setColor(TEXT_COLOR);
         g.setFont(ROBOTO_REGULAR_20);
         g.drawString(classMetadata.name(), (int) position.x() - g.getFontMetrics().stringWidth(classMetadata.name()) / 2, (int) (position.y() - CAPTION_INDENT));
     }

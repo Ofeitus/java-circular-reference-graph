@@ -8,6 +8,8 @@ import lombok.Setter;
 import java.awt.*;
 import java.util.Set;
 
+import static com.ofeitus.jcrg.ui.diagram.BodyState.DEFAULT;
+
 @Getter
 @Setter
 @RequiredArgsConstructor
@@ -16,7 +18,7 @@ public abstract class Body {
     protected final int worldId;
     private final int depth;
     protected boolean dragged;
-    protected boolean highlighted;
+    protected BodyState state = DEFAULT;
 
     public void calculateForce(Set<Body> otherBodies) {
     }
