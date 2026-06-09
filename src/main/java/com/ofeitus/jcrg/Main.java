@@ -1,5 +1,6 @@
 package com.ofeitus.jcrg;
 
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import com.ofeitus.jcrg.model.ClassCycle;
 import com.ofeitus.jcrg.model.ClassMetadata;
@@ -25,7 +26,7 @@ public class Main {
             "@accentColor", "#76ABAE",
             "defaultFont", "16 Roboto"
         ));
-        FlatMacLightLaf.setup();
+        FlatMacDarkLaf.setup();
 
         List<Graph<ClassMetadata>> subGraphs = JavaParser.parse(
                 List.of(new File("C:\\Users\\Admin\\IdeaProjects\\smart-resort\\core\\src\\main\\java"),
