@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.geom.Path2D;
 import java.awt.geom.QuadCurve2D;
 
+import static com.ofeitus.jcrg.ui.diagram.BodyState.*;
 import static com.ofeitus.jcrg.ui.theme.Colors.*;
 import static com.ofeitus.jcrg.ui.theme.CustomStroke.BASIC_1_5;
 import static java.lang.Math.*;
@@ -20,8 +21,6 @@ public class Edge extends Body {
     private static final double ARROW_HEAD_ANGLE = PI / 8;
     private static final double ARROW_CURVATURE = 20.0;
 
-    private Color color = EDGE_COLOR;
-
     private final Vertex from;
     private final Vertex to;
     private final double rigidity = 20;
@@ -33,18 +32,24 @@ public class Edge extends Body {
         this.to = to;
     }
 
-    @Override
-    public void setState(BodyState state) {
-        super.setState(state);
-        switch (state) {
-            case HIGHLIGHTED -> color = HIGHLIGHT_COLOR;
-            case DEFAULT -> color = EDGE_COLOR;
-            case SHADOWED -> color = EDGE_SHADOWED_COLOR;
-        }
+    public boolean connectedTo(Body body) {
+        return from == body || to == body;
     }
 
     @Override
     public void draw(Graphics2D g) {
+        Color color;
+        if (state == HIGHLIGHTED) {
+            color = HIGHLIGHT_COLOR;
+        } else if (from.state == SHADOWED && to.state == SHADOWED) {
+            color = EDGE_SHADOWED_COLOR;
+        } else if (from.state == SELECTED) {
+            color = HIGHLIGHT_COLOR;
+        } else if (to.state == SELECTED) {
+            color = HIGHLIGHT_COLOR_2;
+        } else {
+            color = EDGE_COLOR;
+        }
         g.setColor(color);
         g.setStroke(BASIC_1_5);
 

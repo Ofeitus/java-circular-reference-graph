@@ -25,6 +25,7 @@ public class Main {
     private static final Random random = new Random();
 
     public static void main(String[] args) throws IOException {
+        System.setProperty("awt.dnd.drag.threshold", "10");
         FlatMacLightLaf.setGlobalExtraDefaults(Map.of(
             "@accentColor", "#76ABAE",
             "defaultFont", "16 Roboto"

@@ -53,17 +53,12 @@ public class Space extends JPanel {
             repaint();
         });
         addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                cyclesList.clearSelection();
-                Point2D logicalPoint = screenToLogicalPoint(e.getPoint());
-                Vector2D mousePosition = new Vector2D(logicalPoint.getX(), logicalPoint.getY());
-                System.out.println(mousePosition);
-            }
+            private Point pressPoint;
+            private static final int CLICK_TOLERANCE = 15;
 
             @Override
             public void mousePressed(MouseEvent e) {
+                pressPoint = e.getPoint();
                 Point2D logicalPoint = screenToLogicalPoint(e.getPoint());
                 Vector2D mousePosition = new Vector2D(logicalPoint.getX(), logicalPoint.getY());
                 bodies.stream()
@@ -75,6 +70,26 @@ public class Space extends JPanel {
             @Override
             public void mouseReleased(MouseEvent e) {
                 bodies.forEach(body -> body.setDragged(false));
+                if (pressPoint != null) {
+                    double distance = pressPoint.distance(e.getPoint());
+                    if (distance <= CLICK_TOLERANCE) {
+                        cyclesList.clearSelection();
+                        bodies.forEach(body -> body.setState(SHADOWED));
+                        Point2D logicalPoint = screenToLogicalPoint(e.getPoint());
+                        Vector2D mousePosition = new Vector2D(logicalPoint.getX(), logicalPoint.getY());
+                        bodies.stream()
+                                .filter(body -> body.contains(mousePosition))
+                                .findFirst()
+                                .ifPresent(body -> bodies.forEach(otherBody -> {
+                                    if (otherBody instanceof Edge edge && edge.connectedTo(body)) {
+                                        edge.setState(HIGHLIGHTED);
+                                        edge.getFrom().setState(HIGHLIGHTED);
+                                        edge.getTo().setState(HIGHLIGHTED);
+                                    }
+                                }));
+                    }
+                }
+                pressPoint = null;
             }
         });
         cyclesList.addListSelectionListener(_ -> {

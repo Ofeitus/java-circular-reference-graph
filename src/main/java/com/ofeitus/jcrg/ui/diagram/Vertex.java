@@ -47,7 +47,7 @@ public class Vertex extends Body {
     public void calculateForce(Set<Body> otherBodies) {
         force = Vector2D.ZERO;
         otherBodies.forEach(otherBody -> {
-            if (state.equals(HIGHLIGHTED) && !otherBody.state.equals(HIGHLIGHTED)) {
+            if (state == HIGHLIGHTED && otherBody.state != HIGHLIGHTED) {
                 return;
             }
             if (worldId != otherBody.worldId) {
