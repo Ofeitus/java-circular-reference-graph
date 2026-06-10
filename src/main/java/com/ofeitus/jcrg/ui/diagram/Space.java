@@ -54,6 +54,15 @@ public class Space extends JPanel {
         });
         addMouseListener(new MouseAdapter() {
             @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                cyclesList.clearSelection();
+                Point2D logicalPoint = screenToLogicalPoint(e.getPoint());
+                Vector2D mousePosition = new Vector2D(logicalPoint.getX(), logicalPoint.getY());
+                System.out.println(mousePosition);
+            }
+
+            @Override
             public void mousePressed(MouseEvent e) {
                 Point2D logicalPoint = screenToLogicalPoint(e.getPoint());
                 Vector2D mousePosition = new Vector2D(logicalPoint.getX(), logicalPoint.getY());

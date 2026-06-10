@@ -22,6 +22,8 @@ import java.util.List;
 
 public class Main {
 
+    private static final Random random = new Random();
+
     public static void main(String[] args) throws IOException {
         FlatMacLightLaf.setGlobalExtraDefaults(Map.of(
             "@accentColor", "#76ABAE",
@@ -46,12 +48,7 @@ public class Main {
             JFrame frame = new JFrame("Circular references");
             Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-            Random random = new Random();
-
-            DefaultListModel<ClassCycle> cycleListModel = new DefaultListModel<>();
-            cycleListModel.addAll(cycles);
-            CyclesList cyclesList = new CyclesList(cycleListModel);
-            cyclesList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            CyclesList cyclesList = new CyclesList(cycles);
 
             Space space = new Space(cyclesList);
 

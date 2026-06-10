@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.awt.*;
+import java.awt.geom.Path2D;
+import java.awt.geom.QuadCurve2D;
 
 import static com.ofeitus.jcrg.ui.theme.Colors.*;
 import static com.ofeitus.jcrg.ui.theme.CustomStroke.BASIC_1_5;
@@ -16,6 +18,7 @@ public class Edge extends Body {
 
     private static final int ARROW_HEAD_SIZE = 15;
     private static final double ARROW_HEAD_ANGLE = PI / 8;
+    private static final double ARROW_CURVATURE = 20.0;
 
     private Color color = EDGE_COLOR;
 
@@ -45,24 +48,32 @@ public class Edge extends Body {
         g.setColor(color);
         g.setStroke(BASIC_1_5);
 
-        Vector2D arrowDirection = to.getPosition().subtract(from.getPosition()).normalize();
-        Vector2D fromConnectionPoint = from.getPosition().add(arrowDirection.multiply(Vertex.RADIUS * 1.4));
-        Vector2D toConnectionPoint = to.getPosition().subtract(arrowDirection.multiply(Vertex.RADIUS * 1.4));
-        Vector2D point3 = to.getPosition().subtract(arrowDirection.multiply(Vertex.RADIUS * 1.4 + (double) ARROW_HEAD_SIZE / 2));
-        double x2 = toConnectionPoint.x();
-        double y2 = toConnectionPoint.y();
-        double x3 = point3.x();
-        double y3 = point3.y();
-        g.drawLine((int) fromConnectionPoint.x(), (int) fromConnectionPoint.y(), (int) x3, (int) y3);
+        Vector2D direction = to.getPosition().subtract(from.getPosition()).normalize();
+        Vector2D perpendicular = direction.perpendicular();
+        Vector2D fromPoint = from.getPosition().add(direction.add(perpendicular.divide(2)).multiply(Vertex.RADIUS * 1.4));
+        Vector2D toPoint = to.getPosition().subtract(direction.subtract(perpendicular.divide(2)).multiply(Vertex.RADIUS * 1.4));
+        Vector2D ctrlPoint = Vector2D.avg(fromPoint, toPoint).add(perpendicular.multiply(ARROW_CURVATURE));
 
-        double angle = atan2(arrowDirection.y(), arrowDirection.x());
+        g.draw(new QuadCurve2D.Double(fromPoint.x(), fromPoint.y(), ctrlPoint.x(), ctrlPoint.y(), toPoint.x(), toPoint.y()));
+
+        Path2D arrowHead = getArrowHeadPath(toPoint.subtract(ctrlPoint), toPoint.x(), toPoint.y());
+        g.fill(arrowHead);
+        g.draw(arrowHead);
+    }
+
+    private static Path2D getArrowHeadPath(Vector2D headDirection, double x2, double y2) {
+        double angle = atan2(headDirection.y(), headDirection.x());
 
         double xLeft  = x2 - ARROW_HEAD_SIZE * cos(angle - ARROW_HEAD_ANGLE);
         double yLeft  = y2 - ARROW_HEAD_SIZE * sin(angle - ARROW_HEAD_ANGLE);
         double xRight = x2 - ARROW_HEAD_SIZE * cos(angle + ARROW_HEAD_ANGLE);
         double yRight = y2 - ARROW_HEAD_SIZE * sin(angle + ARROW_HEAD_ANGLE);
 
-        g.fillPolygon(new int[]{(int) x2, (int) xLeft, (int) x3, (int) xRight}, new int[]{(int) y2, (int) yLeft, (int) y3, (int) yRight}, 4);
-        g.drawPolygon(new int[]{(int) x2, (int) xLeft, (int) x3, (int) xRight}, new int[]{(int) y2, (int) yLeft, (int) y3, (int) yRight}, 4);
+        Path2D arrowHead = new Path2D.Double();
+        arrowHead.moveTo(x2, y2);
+        arrowHead.lineTo(xLeft, yLeft);
+        arrowHead.lineTo(xRight, yRight);
+        arrowHead.closePath();
+        return arrowHead;
     }
 }

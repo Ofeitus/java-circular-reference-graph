@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.awt.*;
+import java.awt.font.TextLayout;
+import java.awt.geom.Ellipse2D;
 import java.util.Set;
 
 import static com.ofeitus.jcrg.ui.diagram.BodyState.*;
@@ -21,7 +23,7 @@ import static java.lang.Math.*;
 public class Vertex extends Body {
 
     public static final double RADIUS = 10;
-    private static final int CAPTION_INDENT = 20;
+    private static final double CAPTION_INDENT = 20;
 
     private final double mass = 1;
     private double electricCharge = 0.1;
@@ -120,12 +122,17 @@ public class Vertex extends Body {
 
     @Override
     public void draw(Graphics2D g) {
+        Ellipse2D ellipse = new Ellipse2D.Double(position.x() - RADIUS, position.y() - RADIUS, RADIUS * 2, RADIUS * 2);
         g.setColor(color);
-        g.fillOval((int) (position.x() - RADIUS), (int) (position.y() - RADIUS), (int) RADIUS * 2, (int) RADIUS * 2);
+        g.fill(ellipse);
         g.setColor(foregroundColor);
         g.setStroke(BASIC_1_5);
-        g.drawOval((int) (position.x() - RADIUS), (int) (position.y() - RADIUS), (int) RADIUS * 2, (int) RADIUS * 2);
+        g.draw(ellipse);
+
         g.setFont(ROBOTO_REGULAR_20);
-        g.drawString(classMetadata.name(), (int) position.x() - g.getFontMetrics().stringWidth(classMetadata.name()) / 2, (int) (position.y() - CAPTION_INDENT));
+        TextLayout layout = new TextLayout(classMetadata.name(), ROBOTO_REGULAR_20, g.getFontRenderContext());
+        double x = position.x() - (double) g.getFontMetrics().stringWidth(classMetadata.name()) / 2;
+        double y = position.y() - CAPTION_INDENT;
+        layout.draw(g, (float) x, (float) y);
     }
 }
