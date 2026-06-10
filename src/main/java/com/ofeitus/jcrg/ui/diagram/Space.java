@@ -74,19 +74,25 @@ public class Space extends JPanel {
                     double distance = pressPoint.distance(e.getPoint());
                     if (distance <= CLICK_TOLERANCE) {
                         cyclesList.clearSelection();
-                        bodies.forEach(body -> body.setState(SHADOWED));
                         Point2D logicalPoint = screenToLogicalPoint(e.getPoint());
                         Vector2D mousePosition = new Vector2D(logicalPoint.getX(), logicalPoint.getY());
                         bodies.stream()
                                 .filter(body -> body.contains(mousePosition))
                                 .findFirst()
-                                .ifPresent(body -> bodies.forEach(otherBody -> {
-                                    if (otherBody instanceof Edge edge && edge.connectedTo(body)) {
-                                        edge.setState(HIGHLIGHTED);
-                                        edge.getFrom().setState(HIGHLIGHTED);
-                                        edge.getTo().setState(HIGHLIGHTED);
-                                    }
-                                }));
+                                .ifPresentOrElse(
+                                        body -> {
+                                            bodies.forEach(otherBody -> otherBody.setState(SHADOWED));
+                                            bodies.forEach(otherBody -> {
+                                                if (otherBody instanceof Edge edge && edge.connectedTo(body)) {
+                                                    edge.setState(DEFAULT);
+                                                    edge.getFrom().setState(DEFAULT);
+                                                    edge.getTo().setState(DEFAULT);
+                                                }
+                                            });
+                                            body.setState(HIGHLIGHTED);
+                                        },
+                                        () -> bodies.forEach(body -> body.setState(DEFAULT))
+                                );
                     }
                 }
                 pressPoint = null;
@@ -95,10 +101,19 @@ public class Space extends JPanel {
         cyclesList.addListSelectionListener(_ -> {
             ClassCycle cycle = cyclesList.getSelectedValue();
             if (cycle != null) {
+                bodies.forEach(otherBody -> otherBody.setState(SHADOWED));
                 bodies.forEach(body -> {
                     switch (body) {
-                        case Vertex vertex -> vertex.setState(cycle.containsVertex(vertex.getClassMetadata()) ? HIGHLIGHTED : SHADOWED);
-                        case Edge edge -> edge.setState(cycle.containsEdge(edge.getFrom().getClassMetadata(), edge.getTo().getClassMetadata()) ? HIGHLIGHTED : SHADOWED);
+                        case Vertex vertex -> {
+                            if (cycle.containsVertex(vertex.getClassMetadata())) {
+                                vertex.setState(HIGHLIGHTED);
+                            }
+                        }
+                        case Edge edge -> {
+                            if (cycle.containsEdge(edge.getFrom().getClassMetadata(), edge.getTo().getClassMetadata())) {
+                                edge.setState(HIGHLIGHTED);
+                            }
+                        }
                         default -> {
                         }
                     }

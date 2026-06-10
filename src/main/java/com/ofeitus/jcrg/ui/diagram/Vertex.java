@@ -14,7 +14,7 @@ import static com.ofeitus.jcrg.ui.diagram.BodyState.*;
 import static com.ofeitus.jcrg.ui.theme.Colors.*;
 import static com.ofeitus.jcrg.model.Vector2D.minMagnitude;
 import static com.ofeitus.jcrg.ui.theme.CustomFont.ROBOTO_REGULAR_20;
-import static com.ofeitus.jcrg.ui.theme.CustomStroke.BASIC_1_5;
+import static com.ofeitus.jcrg.ui.theme.CustomStroke.BASIC_2;
 import static com.ofeitus.jcrg.ui.diagram.Space.*;
 import static java.lang.Math.*;
 
@@ -22,11 +22,12 @@ import static java.lang.Math.*;
 @Setter
 public class Vertex extends Body {
 
-    public static final double RADIUS = 10;
-    private static final double CAPTION_INDENT = 20;
+    private static final double CAPTION_INDENT = 10;
 
     private final double mass = 1;
-    private double electricCharge = 0.1;
+    private final double electricCharge = 0.15;
+
+    private final double radius;
 
     private Color color = VERTEX_COLOR;
     private Color foregroundColor = FOREGROUND_COLOR;
@@ -37,8 +38,9 @@ public class Vertex extends Body {
 
     private final ClassMetadata classMetadata;
 
-    public Vertex(int worldId, int depth, Vector2D position, ClassMetadata classMetadata) {
+    public Vertex(int worldId, int depth, double radius, Vector2D position, ClassMetadata classMetadata) {
         super(worldId, depth);
+        this.radius = radius;
         this.position = position;
         this.classMetadata = classMetadata;
     }
@@ -98,7 +100,7 @@ public class Vertex extends Body {
 
     @Override
     public boolean contains(Vector2D point) {
-        return position.subtract(point).magnitude() < RADIUS;
+        return position.subtract(point).magnitude() < radius;
     }
 
     @Override
@@ -122,17 +124,17 @@ public class Vertex extends Body {
 
     @Override
     public void draw(Graphics2D g) {
-        Ellipse2D ellipse = new Ellipse2D.Double(position.x() - RADIUS, position.y() - RADIUS, RADIUS * 2, RADIUS * 2);
+        Ellipse2D ellipse = new Ellipse2D.Double(position.x() - radius, position.y() - radius, radius * 2, radius * 2);
         g.setColor(color);
         g.fill(ellipse);
         g.setColor(foregroundColor);
-        g.setStroke(BASIC_1_5);
+        g.setStroke(BASIC_2);
         g.draw(ellipse);
 
         g.setFont(ROBOTO_REGULAR_20);
         TextLayout layout = new TextLayout(classMetadata.name(), ROBOTO_REGULAR_20, g.getFontRenderContext());
         double x = position.x() - (double) g.getFontMetrics().stringWidth(classMetadata.name()) / 2;
-        double y = position.y() - CAPTION_INDENT;
+        double y = position.y() - radius - CAPTION_INDENT;
         layout.draw(g, (float) x, (float) y);
     }
 }

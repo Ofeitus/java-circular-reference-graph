@@ -33,8 +33,8 @@ public class Main {
         FlatMacDarkLaf.setup();
 
         List<Graph<ClassMetadata>> subGraphs = JavaParser.parse(
-                List.of(new File("C:\\Users\\TYUSHEV\\IdeaProjects\\smart-resort\\core\\src\\main\\java"),
-                        new File("C:\\Users\\TYUSHEV\\IdeaProjects\\smart-resort\\reservation\\src\\main\\java")),
+                List.of(new File("C:\\Users\\Admin\\IdeaProjects\\smart-resort\\core\\src\\main\\java"),
+                        new File("C:\\Users\\Admin\\IdeaProjects\\smart-resort\\reservation\\src\\main\\java")),
                         ParserConfiguration.LanguageLevel.JAVA_8,
                         true)
                 .connectedComponents();
@@ -59,9 +59,17 @@ public class Main {
             int vertexDepth = 1;
             int edgeDepth = 2;
 
+            double maxVertexRadius = 0;
             for (Graph<ClassMetadata> subGraph : subGraphs) {
                 for (ClassMetadata classMetadata : subGraph.vertices()) {
-                    Vertex vertex = new Vertex(world, vertexDepth, new Vector2D(random.nextInt(screenSize.width), random.nextInt(screenSize.height)), classMetadata);
+                    maxVertexRadius = Math.max(subGraph.outgoingEdges(classMetadata).size() + subGraph.incomingEdges(classMetadata).size(), maxVertexRadius);
+                }
+            }
+
+            for (Graph<ClassMetadata> subGraph : subGraphs) {
+                for (ClassMetadata classMetadata : subGraph.vertices()) {
+                    double vertexRadius = subGraph.outgoingEdges(classMetadata).size() + subGraph.incomingEdges(classMetadata).size();
+                    Vertex vertex = new Vertex(world, vertexDepth, 10 + (vertexRadius / maxVertexRadius) * 30, new Vector2D(random.nextInt(screenSize.width), random.nextInt(screenSize.height)), classMetadata);
                     space.addBody(vertex);
                     vertices.put(classMetadata, vertex);
                 }

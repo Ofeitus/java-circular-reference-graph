@@ -5,21 +5,20 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.awt.*;
+import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
-import java.awt.geom.QuadCurve2D;
 
 import static com.ofeitus.jcrg.ui.diagram.BodyState.*;
 import static com.ofeitus.jcrg.ui.theme.Colors.*;
-import static com.ofeitus.jcrg.ui.theme.CustomStroke.BASIC_1_5;
+import static com.ofeitus.jcrg.ui.theme.CustomStroke.BASIC_2;
 import static java.lang.Math.*;
 
 @Getter
 @Setter
 public class Edge extends Body {
 
-    private static final int ARROW_HEAD_SIZE = 15;
+    private static final double ARROW_HEAD_SIZE = 12;
     private static final double ARROW_HEAD_ANGLE = PI / 8;
-    private static final double ARROW_CURVATURE = 20.0;
 
     private final Vertex from;
     private final Vertex to;
@@ -41,27 +40,26 @@ public class Edge extends Body {
         Color color;
         if (state == HIGHLIGHTED) {
             color = HIGHLIGHT_COLOR;
-        } else if (from.state == SHADOWED && to.state == SHADOWED) {
-            color = EDGE_SHADOWED_COLOR;
-        } else if (from.state == SELECTED) {
+        } else if (from.state == HIGHLIGHTED && to.state == DEFAULT) {
             color = HIGHLIGHT_COLOR;
-        } else if (to.state == SELECTED) {
+        } else if (from.state == DEFAULT && to.state == HIGHLIGHTED) {
             color = HIGHLIGHT_COLOR_2;
-        } else {
+        } else if (state == DEFAULT) {
             color = EDGE_COLOR;
+        } else {
+            color = EDGE_SHADOWED_COLOR;
         }
         g.setColor(color);
-        g.setStroke(BASIC_1_5);
+        g.setStroke(BASIC_2);
 
         Vector2D direction = to.getPosition().subtract(from.getPosition()).normalize();
-        Vector2D perpendicular = direction.perpendicular();
-        Vector2D fromPoint = from.getPosition().add(direction.add(perpendicular.divide(2)).multiply(Vertex.RADIUS * 1.4));
-        Vector2D toPoint = to.getPosition().subtract(direction.subtract(perpendicular.divide(2)).multiply(Vertex.RADIUS * 1.4));
-        Vector2D ctrlPoint = Vector2D.avg(fromPoint, toPoint).add(perpendicular.multiply(ARROW_CURVATURE));
+        Vector2D shift = direction.perpendicular().multiply(4);
+        Vector2D fromPoint = from.getPosition().add(direction.multiply(from.getRadius() + ARROW_HEAD_SIZE / 2)).add(shift);
+        Vector2D toPoint = to.getPosition().subtract(direction.multiply(to.getRadius() + ARROW_HEAD_SIZE / 2)).add(shift);
 
-        g.draw(new QuadCurve2D.Double(fromPoint.x(), fromPoint.y(), ctrlPoint.x(), ctrlPoint.y(), toPoint.x(), toPoint.y()));
+        g.draw(new Line2D.Double(fromPoint.x(), fromPoint.y(), toPoint.x(), toPoint.y()));
 
-        Path2D arrowHead = getArrowHeadPath(toPoint.subtract(ctrlPoint), toPoint.x(), toPoint.y());
+        Path2D arrowHead = getArrowHeadPath(direction, toPoint.x(), toPoint.y());
         g.fill(arrowHead);
         g.draw(arrowHead);
     }
