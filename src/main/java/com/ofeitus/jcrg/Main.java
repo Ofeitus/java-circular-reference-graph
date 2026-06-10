@@ -2,6 +2,7 @@ package com.ofeitus.jcrg;
 
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
+import com.github.javaparser.ParserConfiguration;
 import com.ofeitus.jcrg.model.ClassCycle;
 import com.ofeitus.jcrg.model.ClassMetadata;
 import com.ofeitus.jcrg.graph.Graph;
@@ -29,11 +30,11 @@ public class Main {
         FlatMacDarkLaf.setup();
 
         List<Graph<ClassMetadata>> subGraphs = JavaParser.parse(
-                List.of(new File("C:\\Users\\Admin\\IdeaProjects\\smart-resort\\core\\src\\main\\java"),
-                        new File("C:\\Users\\Admin\\IdeaProjects\\smart-resort\\reservation\\src\\main\\java")), true)
+                List.of(new File("C:\\Users\\TYUSHEV\\IdeaProjects\\smart-resort\\core\\src\\main\\java"),
+                        new File("C:\\Users\\TYUSHEV\\IdeaProjects\\smart-resort\\reservation\\src\\main\\java")),
+                        ParserConfiguration.LanguageLevel.JAVA_8,
+                        true)
                 .connectedComponents();
-        //List<Graph<ClassMetadata>> subGraphs = SubgraphExtractor.getConnectedComponents(
-        //        GraphGenerator.generate(new File("C:\\Users\\Admin\\IdeaProjects\\java-circular-reference-graph\\test"), true));
 
         List<ClassCycle> cycles = subGraphs.stream()
                 .flatMap(subGraph -> subGraph.elementaryCycles().stream())

@@ -1,5 +1,6 @@
 package com.ofeitus.jcrg.parser;
 
+import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.FieldDeclaration;
@@ -41,7 +42,7 @@ public class JavaParser {
         return files;
     }
 
-    public static Graph<ClassMetadata> parse(List<File> srcDirs, boolean removeSelfReferences) throws FileNotFoundException {
+    public static Graph<ClassMetadata> parse(List<File> srcDirs, ParserConfiguration.LanguageLevel languageLevel, boolean removeSelfReferences) throws FileNotFoundException {
         List<File> javaFiles = srcDirs.stream()
                 .flatMap(srcDir -> listFilesRecursive(srcDir).stream().filter(file -> file.getName().endsWith(".java")))
                 .toList();
@@ -50,6 +51,7 @@ public class JavaParser {
         combinedTypeSolver.add(new ReflectionTypeSolver(false));
         srcDirs.forEach(srcDir -> combinedTypeSolver.add(new JavaParserTypeSolver(srcDir)));
         JavaSymbolSolver symbolSolver = new JavaSymbolSolver(combinedTypeSolver);
+        StaticJavaParser.getParserConfiguration().setLanguageLevel(languageLevel);
         StaticJavaParser.getParserConfiguration().setSymbolResolver(symbolSolver);
 
         Graph<ClassMetadata> graph = new Graph<>();
