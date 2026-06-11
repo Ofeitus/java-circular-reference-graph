@@ -33,8 +33,8 @@ public class Main {
         FlatMacDarkLaf.setup();
 
         List<Graph<ClassMetadata>> subGraphs = JavaParser.parse(
-                List.of(new File("C:\\Users\\Admin\\IdeaProjects\\smart-resort\\core\\src\\main\\java"),
-                        new File("C:\\Users\\Admin\\IdeaProjects\\smart-resort\\reservation\\src\\main\\java")),
+                List.of(new File("C:\\Users\\TYUSHEV\\IdeaProjects\\smart-resort\\core\\src\\main\\java"),
+                        new File("C:\\Users\\TYUSHEV\\IdeaProjects\\smart-resort\\reservation\\src\\main\\java")),
                         ParserConfiguration.LanguageLevel.JAVA_8,
                         true)
                 .connectedComponents();
