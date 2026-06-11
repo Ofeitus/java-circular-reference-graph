@@ -3,17 +3,19 @@ package com.ofeitus.jcrg.ui.dialog;
 import javax.swing.*;
 import java.awt.*;
 
-public class ModalProgressDialog {
+public class ModalProgressMonitor {
     private final JDialog dialog;
     private final JProgressBar progressBar;
     private final JLabel noteLabel;
 
-    public ModalProgressDialog(Window owner, String title, String message) {
+    public ModalProgressMonitor(Window owner, String title, String message) {
         dialog = new JDialog(owner, title, Dialog.ModalityType.APPLICATION_MODAL);
         dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        dialog.setResizable(false);
 
         progressBar = new JProgressBar(0, 100);
         progressBar.setStringPainted(true);
+        progressBar.setPreferredSize(new Dimension(350, 30));
 
         noteLabel = new JLabel(message);
 
@@ -32,6 +34,7 @@ public class ModalProgressDialog {
         if (note != null) {
             noteLabel.setText(note);
         }
+        dialog.pack();
     }
 
     public void show() {

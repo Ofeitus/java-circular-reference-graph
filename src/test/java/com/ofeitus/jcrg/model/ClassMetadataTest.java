@@ -8,13 +8,13 @@ class ClassMetadataTest {
 
     @Test
     void testEquality() {
-        assertEquals(new ClassMetadata("Test", "com.test.Test"),
-                new ClassMetadata("Test", "com.test.Test"));
+        assertEquals(new ClassMetadata("com.test.Test"),
+                new ClassMetadata("com.test.Test"));
     }
 
     @Test
     void testEqualityWithDifferentPackets() {
-        assertNotEquals(new ClassMetadata("Test", "com.test.Test"),
-                new ClassMetadata("Test", "com.demo.Test"));
+        assertNotEquals(new ClassMetadata("com.test.Test"),
+                new ClassMetadata("com.demo.Test"));
     }
 }

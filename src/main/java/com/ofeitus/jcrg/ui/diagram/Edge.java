@@ -25,8 +25,8 @@ public class Edge extends Body {
     private final double rigidity = 20;
     private final double originalLength = 1;
 
-    public Edge(int worldId, int depth, Vertex from, Vertex to) {
-        super(worldId, depth);
+    public Edge(int worldId, Vertex from, Vertex to) {
+        super(worldId, 2);
         this.from = from;
         this.to = to;
     }

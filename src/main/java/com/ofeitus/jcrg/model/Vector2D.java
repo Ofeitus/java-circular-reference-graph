@@ -44,14 +44,5 @@ public record Vector2D(double x, double y) {
         return new Vector2D(-this.y, this.x);
     }
 
-    public static Vector2D avg(Vector2D... vectors) {
-        double xSum = 0;
-        double ySum = 0;
-        for (Vector2D vector : vectors) {
-            xSum += vector.x;
-            ySum += vector.y;
-        }
-        return new Vector2D(xSum / vectors.length, ySum / vectors.length);
-    }
 }
 

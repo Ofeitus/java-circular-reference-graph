@@ -22,11 +22,11 @@ public record ClassCycle(List<ClassMetadata> classes) {
         StringBuilder sb = new StringBuilder();
         sb.append("(").append(classes.size()).append(") ");
         if (classes.size() == 1) {
-            sb.append(classes.getFirst().name());
+            sb.append(classes.getFirst().getName());
         } else if (classes.size() == 2) {
-            sb.append(classes.getFirst().name()).append(" -> ").append(classes.get(1).name());
+            sb.append(classes.getFirst().getName()).append(" -> ").append(classes.get(1).getName());
         } else {
-            sb.append(classes.getFirst().name()).append(" -> ... -> ").append(classes.getLast().name());
+            sb.append(classes.getFirst().getName()).append(" -> ... -> ").append(classes.getLast().getName());
         }
         return sb.toString();
     }

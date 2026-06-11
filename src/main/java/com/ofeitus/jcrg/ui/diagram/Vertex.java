@@ -38,8 +38,8 @@ public class Vertex extends Body {
 
     private final ClassMetadata classMetadata;
 
-    public Vertex(int worldId, int depth, double radius, Vector2D position, ClassMetadata classMetadata) {
-        super(worldId, depth);
+    public Vertex(int worldId, double radius, Vector2D position, ClassMetadata classMetadata) {
+        super(worldId, 1);
         this.radius = radius;
         this.position = position;
         this.classMetadata = classMetadata;
@@ -132,8 +132,8 @@ public class Vertex extends Body {
         g.draw(ellipse);
 
         g.setFont(ROBOTO_REGULAR_20);
-        TextLayout layout = new TextLayout(classMetadata.name(), ROBOTO_REGULAR_20, g.getFontRenderContext());
-        double x = position.x() - (double) g.getFontMetrics().stringWidth(classMetadata.name()) / 2;
+        TextLayout layout = new TextLayout(classMetadata.getName(), ROBOTO_REGULAR_20, g.getFontRenderContext());
+        double x = position.x() - (double) g.getFontMetrics().stringWidth(classMetadata.getName()) / 2;
         double y = position.y() - radius - CAPTION_INDENT;
         layout.draw(g, (float) x, (float) y);
     }
