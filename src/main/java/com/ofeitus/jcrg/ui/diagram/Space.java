@@ -130,6 +130,10 @@ public class Space extends JPanel {
         bodies.add(body);
     }
 
+    public void clear() {
+        bodies.clear();
+    }
+
     private void tick() {
         Point2D logicalMousePoint = screenToLogicalPoint(getMousePosition());
         Vector2D mousePosition = logicalMousePoint != null ? new Vector2D(logicalMousePoint.getX(), logicalMousePoint.getY()) : null;
@@ -160,7 +164,7 @@ public class Space extends JPanel {
     /**
      * Преобразовать координаты на экране в логические координаты в пространстве с учётом смещения и масштабирования
      */
-    public Point2D screenToLogicalPoint(Point screenPoint) {
+    private Point2D screenToLogicalPoint(Point screenPoint) {
         if (screenPoint == null) {
             return null;
         }
