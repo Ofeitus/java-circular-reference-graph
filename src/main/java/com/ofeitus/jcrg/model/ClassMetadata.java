@@ -31,4 +31,9 @@ public class ClassMetadata implements Comparable<ClassMetadata> {
     public int hashCode() {
         return fullName.hashCode();
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

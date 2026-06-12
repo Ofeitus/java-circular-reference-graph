@@ -7,9 +7,9 @@ import javax.swing.*;
 
 public class MenuBar extends JMenuBar {
 
-    public MenuBar(CyclesList cyclesList, Space space) {
+    public MenuBar(ClassTree classTree, CyclesList cyclesList, Space space) {
         JMenu menuFile = new JMenu("File");
-        menuFile.add(new JMenuItem(new OpenSourceAction(cyclesList, space)));
+        menuFile.add(new JMenuItem(new OpenSourceAction(classTree, cyclesList, space)));
         add(menuFile);
     }
 }

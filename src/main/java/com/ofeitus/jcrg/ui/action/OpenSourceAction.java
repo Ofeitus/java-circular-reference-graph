@@ -13,6 +13,7 @@ import com.ofeitus.jcrg.graph.Graph;
 import com.ofeitus.jcrg.model.ClassCycle;
 import com.ofeitus.jcrg.model.ClassMetadata;
 import com.ofeitus.jcrg.model.Vector2D;
+import com.ofeitus.jcrg.ui.component.ClassTree;
 import com.ofeitus.jcrg.ui.component.CyclesList;
 import com.ofeitus.jcrg.ui.diagram.Edge;
 import com.ofeitus.jcrg.ui.diagram.Space;
@@ -34,11 +35,13 @@ public class OpenSourceAction extends AbstractAsyncAction {
     private static final Logger logger = LoggerFactory.getLogger(OpenSourceAction.class);
     private static final Random random = new Random();
 
+    private final ClassTree classTree;
     private final CyclesList cyclesList;
     private final Space space;
 
-    public OpenSourceAction(CyclesList cyclesList, Space space) {
+    public OpenSourceAction(ClassTree classTree, CyclesList cyclesList, Space space) {
         super("Open", "Opening");
+        this.classTree = classTree;
         this.cyclesList = cyclesList;
         this.space = space;
     }
@@ -56,6 +59,29 @@ public class OpenSourceAction extends AbstractAsyncAction {
             files.add(file);
         }
         return files;
+    }
+
+    private Graph<ClassMetadata> filterClasses(Graph<ClassMetadata> graph) {
+        boolean removeSelfReferences = true;
+        int iterations = 0;
+        AtomicBoolean somethingRemoved = new AtomicBoolean(true);
+        while (somethingRemoved.get()) {
+            somethingRemoved.set(false);
+            graph.vertices().forEach(vertex -> {
+                Set<ClassMetadata> outgoingEdges = graph.outgoingEdges(vertex);
+                Set<ClassMetadata> incomingEdges = graph.incomingEdges(vertex);
+                if (removeSelfReferences && outgoingEdges.contains(vertex)) {
+                    graph.removeEdge(vertex, vertex);
+                }
+                if (outgoingEdges.isEmpty() || incomingEdges.isEmpty()) {
+                    graph.removeVertex(vertex);
+                    somethingRemoved.set(true);
+                }
+            });
+            iterations++;
+        }
+        logger.info("Filtered {} classes in {} iterations", graph.size(), iterations);
+        return graph;
     }
 
     @Override
@@ -117,26 +143,11 @@ public class OpenSourceAction extends AbstractAsyncAction {
         });
 
         resultsCallback.accept(new IntermediateResult(100, "Filtering classes"));
+        //graph = filterClasses(graph);
 
-        boolean removeSelfReferences = true;
-        int iterations = 0;
-        AtomicBoolean somethingRemoved = new AtomicBoolean(true);
-        while (somethingRemoved.get()) {
-            somethingRemoved.set(false);
-            graph.vertices().forEach(vertex -> {
-                Set<ClassMetadata> outgoingEdges = graph.outgoingEdges(vertex);
-                Set<ClassMetadata> incomingEdges = graph.incomingEdges(vertex);
-                if (removeSelfReferences && outgoingEdges.contains(vertex)) {
-                    graph.removeEdge(vertex, vertex);
-                }
-                if (outgoingEdges.isEmpty() || incomingEdges.isEmpty()) {
-                    graph.removeVertex(vertex);
-                    somethingRemoved.set(true);
-                }
-            });
-            iterations++;
-        }
-        logger.info("Filtered {} classes in {} iterations", graph.size(), iterations);
+        classTree.clear();
+        classTree.addAll(graph.vertices());
+        classTree.sort();
 
         resultsCallback.accept(new IntermediateResult(100, "Searching cycles"));
 
