@@ -17,7 +17,7 @@ public class MainFrame extends JFrame {
         CyclesList cyclesList = new CyclesList();
         Space space = new Space(cyclesList);
 
-        JSplitPane rightPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(classTree), new JScrollPane(cyclesList));
+        JSplitPane rightPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT, classTree, cyclesList);
         rightPanel.setResizeWeight(0.5);
         JScrollPane spaceScrollPane = new JScrollPane(space);
         spaceScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);

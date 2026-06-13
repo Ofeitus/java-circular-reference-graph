@@ -12,8 +12,8 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.ofeitus.jcrg.ui.diagram.BodyState.*;
 import static com.ofeitus.jcrg.ui.theme.Colors.BACKGROUND_COLOR;
@@ -32,7 +32,7 @@ public class Space extends JPanel {
     private double offsetX = 0.0;
     private double offsetY = 0.0;
 
-    private final Set<Body> bodies = new HashSet<>();
+    private final Set<Body> bodies = ConcurrentHashMap.newKeySet();
 
     public Space(CyclesList cyclesList) {
         super();

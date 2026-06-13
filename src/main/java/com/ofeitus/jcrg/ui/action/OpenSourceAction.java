@@ -61,8 +61,7 @@ public class OpenSourceAction extends AbstractAsyncAction {
         return files;
     }
 
-    private Graph<ClassMetadata> filterClasses(Graph<ClassMetadata> graph) {
-        boolean removeSelfReferences = true;
+    private Graph<ClassMetadata> filterClasses(Graph<ClassMetadata> graph, boolean removeSelfReferences) {
         int iterations = 0;
         AtomicBoolean somethingRemoved = new AtomicBoolean(true);
         while (somethingRemoved.get()) {
@@ -143,11 +142,10 @@ public class OpenSourceAction extends AbstractAsyncAction {
         });
 
         resultsCallback.accept(new IntermediateResult(100, "Filtering classes"));
-        //graph = filterClasses(graph);
+        filterClasses(graph, true);
 
         classTree.clear();
         classTree.addAll(graph.vertices());
-        classTree.sort();
 
         resultsCallback.accept(new IntermediateResult(100, "Searching cycles"));
 
@@ -158,8 +156,8 @@ public class OpenSourceAction extends AbstractAsyncAction {
                 .map(ClassCycle::new)
                 .toList();
 
-        cyclesList.getModel().clear();
-        cyclesList.getModel().addAll(cycles);
+        cyclesList.clear();
+        cyclesList.addAll(cycles);
 
         resultsCallback.accept(new IntermediateResult(100, "Creating diagram"));
 
