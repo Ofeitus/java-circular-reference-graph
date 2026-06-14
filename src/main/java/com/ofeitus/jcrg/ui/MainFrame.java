@@ -15,14 +15,14 @@ public class MainFrame extends JFrame {
 
         ClassTree classTree = new ClassTree();
         CyclesList cyclesList = new CyclesList();
-        Space space = new Space(cyclesList);
+        Space space = new Space(classTree, cyclesList);
 
-        JSplitPane rightPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT, classTree, cyclesList);
-        rightPanel.setResizeWeight(0.5);
+        //JSplitPane rightPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT, classTree, cyclesList);
+        //rightPanel.setResizeWeight(0.5);
         JScrollPane spaceScrollPane = new JScrollPane(space);
         spaceScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         spaceScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        JSplitPane mainPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, rightPanel, spaceScrollPane);
+        JSplitPane mainPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, cyclesList, spaceScrollPane);
         mainPanel.setResizeWeight(0);
 
         add(mainPanel, BorderLayout.CENTER);

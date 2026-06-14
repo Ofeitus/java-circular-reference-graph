@@ -4,11 +4,13 @@ import com.ofeitus.jcrg.model.Vector2D;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 
 import static com.ofeitus.jcrg.ui.diagram.BodyState.*;
+import static com.ofeitus.jcrg.ui.theme.ColorUtil.transparent;
 import static com.ofeitus.jcrg.ui.theme.Colors.*;
 import static com.ofeitus.jcrg.ui.theme.CustomStroke.BASIC_2;
 import static java.lang.Math.*;
@@ -45,9 +47,9 @@ public class Edge extends Body {
         } else if (from.state == DEFAULT && to.state == HIGHLIGHTED) {
             color = HIGHLIGHT_COLOR_2;
         } else if (state == DEFAULT) {
-            color = EDGE_COLOR;
+            color = transparent(UIManager.getColor("Label.foreground"), 80);
         } else {
-            color = EDGE_SHADOWED_COLOR;
+            color = transparent(UIManager.getColor("Label.foreground"), 30);
         }
         g.setColor(color);
         g.setStroke(BASIC_2);

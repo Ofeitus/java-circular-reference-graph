@@ -2,14 +2,16 @@ package com.ofeitus.jcrg.ui.component;
 
 import com.ofeitus.jcrg.model.ClassMetadata;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignA;
-import org.kordamp.ikonli.swing.FontIcon;
 
 import javax.swing.*;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.*;
+
+import static com.ofeitus.jcrg.ui.theme.ThemedIcon.icon;
 
 public class ClassTree extends JPanel {
     private final JTree tree;
@@ -39,6 +41,7 @@ public class ClassTree extends JPanel {
                 collapseChild(event.getPath());
             }
         });
+        tree.setLargeModel(true);
 
         JToolBar toolBar = new JToolBar();
         toolBar.add(new JLabel("Project"));
@@ -48,6 +51,10 @@ public class ClassTree extends JPanel {
 
         add(toolBar, BorderLayout.NORTH);
         add(new JScrollPane(tree), BorderLayout.CENTER);
+    }
+
+    public void addSelectionListener(TreeSelectionListener listener) {
+        tree.addTreeSelectionListener(listener);
     }
 
     public void clear() {
@@ -66,8 +73,6 @@ public class ClassTree extends JPanel {
             getOrCreateChild(currentNode, new UserObject(false, parts[parts.length - 1]));
         }
         expandAll();
-        tree.updateUI();
-        expandAll();
     }
 
     private DefaultMutableTreeNode getOrCreateChild(DefaultMutableTreeNode parent, UserObject userObject) {
@@ -82,7 +87,7 @@ public class ClassTree extends JPanel {
         while (i < parent.getChildCount() && alphabetComparator.compare(newChild, (DefaultMutableTreeNode) parent.getChildAt(i)) >= 0) {
             i++;
         }
-        parent.insert(newChild, i);
+        treeModel.insertNodeInto(newChild, parent, i);
         return newChild;
     }
 
@@ -112,7 +117,7 @@ public class ClassTree extends JPanel {
                 });
     }
 
-    private record UserObject(boolean isPackage, String name) {}
+    public record UserObject(boolean isPackage, String name) {}
 
     private static class ClassTreeCellRenderer extends DefaultTreeCellRenderer {
 
@@ -125,7 +130,7 @@ public class ClassTree extends JPanel {
     private class ExpandAllAction extends AbstractAction {
 
         public ExpandAllAction() {
-            super("", FontIcon.of(MaterialDesignA.ARROW_EXPAND, 16, UIManager.getColor("Label.foreground")));
+            super("", icon(MaterialDesignA.ARROW_EXPAND, 16));
         }
 
         @Override
@@ -137,7 +142,7 @@ public class ClassTree extends JPanel {
     private class CollapseAllAction extends AbstractAction {
 
         public CollapseAllAction() {
-            super("", FontIcon.of(MaterialDesignA.ARROW_COLLAPSE, 16, UIManager.getColor("Label.foreground")));
+            super("", icon(MaterialDesignA.ARROW_COLLAPSE, 16));
         }
 
         @Override

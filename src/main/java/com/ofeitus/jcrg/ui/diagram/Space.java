@@ -2,6 +2,7 @@ package com.ofeitus.jcrg.ui.diagram;
 
 import com.ofeitus.jcrg.model.ClassCycle;
 import com.ofeitus.jcrg.model.Vector2D;
+import com.ofeitus.jcrg.ui.component.ClassTree;
 import com.ofeitus.jcrg.ui.component.CyclesList;
 
 import javax.swing.*;
@@ -16,7 +17,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.ofeitus.jcrg.ui.diagram.BodyState.*;
-import static com.ofeitus.jcrg.ui.theme.Colors.BACKGROUND_COLOR;
 
 public class Space extends JPanel {
 
@@ -34,9 +34,8 @@ public class Space extends JPanel {
 
     private final Set<Body> bodies = ConcurrentHashMap.newKeySet();
 
-    public Space(CyclesList cyclesList) {
+    public Space(ClassTree classTree, CyclesList cyclesList) {
         super();
-        setBackground(BACKGROUND_COLOR);
         addMouseWheelListener(e -> {
             Point mousePoint = e.getPoint();
             double oldZoom = zoomFactor;

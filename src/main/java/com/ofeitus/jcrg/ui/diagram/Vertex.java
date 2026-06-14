@@ -5,12 +5,14 @@ import com.ofeitus.jcrg.model.Vector2D;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.font.TextLayout;
 import java.awt.geom.Ellipse2D;
 import java.util.Set;
 
 import static com.ofeitus.jcrg.ui.diagram.BodyState.*;
+import static com.ofeitus.jcrg.ui.theme.ColorUtil.transparent;
 import static com.ofeitus.jcrg.ui.theme.Colors.*;
 import static com.ofeitus.jcrg.model.Vector2D.minMagnitude;
 import static com.ofeitus.jcrg.ui.theme.CustomFont.ROBOTO_REGULAR_20;
@@ -28,9 +30,6 @@ public class Vertex extends Body {
     private final double electricCharge = 0.15;
 
     private final double radius;
-
-    private Color color = VERTEX_COLOR;
-    private Color foregroundColor = FOREGROUND_COLOR;
 
     private Vector2D position;
     private Vector2D velocity = Vector2D.ZERO;
@@ -106,32 +105,24 @@ public class Vertex extends Body {
     @Override
     public void setState(BodyState state) {
         super.setState(state);
-        switch (state) {
-            case HIGHLIGHTED -> {
-                color = HIGHLIGHT_COLOR;
-                foregroundColor = FOREGROUND_COLOR;
-            }
-            case DEFAULT -> {
-                color = VERTEX_COLOR;
-                foregroundColor = FOREGROUND_COLOR;
-            }
-            case SHADOWED -> {
-                color = VERTEX_SHADEWED_COLOR;
-                foregroundColor = FOREGROUND_SHADEWED_COLOR;
-            }
-        }
     }
 
     @Override
     public void draw(Graphics2D g) {
-        Ellipse2D ellipse = new Ellipse2D.Double(position.x() - radius, position.y() - radius, radius * 2, radius * 2);
-        g.setColor(color);
-        g.fill(ellipse);
-        g.setColor(foregroundColor);
-        g.setStroke(BASIC_2);
-        g.draw(ellipse);
+        switch (state) {
+            case HIGHLIGHTED -> g.setColor(UIManager.getColor("Component.accentColor"));
+            case DEFAULT -> g.setColor(UIManager.getColor("Component.accentColor"));
+            case SHADOWED -> g.setColor(transparent(UIManager.getColor("Component.accentColor"), 50));
+        }
 
+        g.fill(new Ellipse2D.Double(position.x() - radius, position.y() - radius, radius * 2, radius * 2));
+
+        switch (state) {
+            case HIGHLIGHTED, DEFAULT -> g.setColor(UIManager.getColor("Label.foreground"));
+            case SHADOWED -> g.setColor(transparent(UIManager.getColor("Label.foreground"), 50));
+        }
         g.setFont(ROBOTO_REGULAR_20);
+
         TextLayout layout = new TextLayout(classMetadata.getName(), ROBOTO_REGULAR_20, g.getFontRenderContext());
         double x = position.x() - (double) g.getFontMetrics().stringWidth(classMetadata.getName()) / 2;
         double y = position.y() - radius - CAPTION_INDENT;
